@@ -54,12 +54,13 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "usbd_cdc_if.h"
+#include "stdbool.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+bool usb_send_flag = false;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -144,6 +145,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		if(usb_send_flag)
+		{
+			CDC_Transmit_FS((uint8_t*)"Test",strlen("Test"));
+			HAL_Delay(500);
+		}
+			
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

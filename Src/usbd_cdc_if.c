@@ -51,7 +51,7 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "stdbool.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,6 +60,8 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+extern bool usb_send_flag;
+
 
 /* USER CODE END PV */
 
@@ -95,6 +97,8 @@
 /* It's up to user to redefine and/or remove those define */
 #define APP_RX_DATA_SIZE  1000
 #define APP_TX_DATA_SIZE  1000
+
+uint8_t Rceive_cmd[APP_RX_DATA_SIZE];
 /* USER CODE END PRIVATE_DEFINES */
 
 /**
@@ -291,6 +295,20 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+	for(uint8_t Cnt = 0 ; Cnt < 8 ; Cnt++)
+		Rceive_cmd[Cnt] = Buf[Cnt];
+	
+	char Tx_buffer[100];
+	if (strcmp((const char*)Rceive_cmd,"[STARTS]") == 0)
+			{
+				usb_send_flag = true;
+			}
+			
+			else if (strcmp((const char*)Rceive_cmd,"[STOPSV]") == 0)
+			{
+				usb_send_flag = false;
+			}
+	
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
   return (USBD_OK);
