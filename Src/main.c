@@ -61,6 +61,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 bool usb_send_flag = false;
+uint8_t adc_ch[2];
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -147,8 +148,18 @@ int main(void)
   {
 		if(usb_send_flag)
 		{
-			CDC_Transmit_FS((uint8_t*)"Test",strlen("Test"));
-			HAL_Delay(500);
+			HAL_ADC_Start(&hadc1);
+			
+			HAL_ADC_PollForConversion(&hadc1,100);
+			adc_ch[0] = HAL_ADC_GetValue(&hadc1);
+			
+			HAL_ADC_PollForConversion(&hadc1,100);
+			adc_ch[1] = HAL_ADC_GetValue(&hadc1);
+			
+			HAL_ADC_Stop(&hadc1);
+			HAL_Delay(100);
+			
+			CDC_Transmit_FS(adc_ch,2);
 		}
 			
     /* USER CODE END WHILE */
@@ -224,7 +235,7 @@ static void MX_ADC1_Init(void)
   */
   hadc1.Instance = ADC1;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.ContinuousConvMode = ENABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;

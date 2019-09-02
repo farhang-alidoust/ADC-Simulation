@@ -61,7 +61,7 @@
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 extern bool usb_send_flag;
-
+extern ADC_HandleTypeDef hadc1;
 
 /* USER CODE END PV */
 
@@ -307,6 +307,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 			else if (strcmp((const char*)Rceive_cmd,"[STOPSV]") == 0)
 			{
 				usb_send_flag = false;
+				HAL_ADC_Stop(&hadc1);
 			}
 	
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
