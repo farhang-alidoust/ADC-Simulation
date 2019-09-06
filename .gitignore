@@ -5,3 +5,6 @@ MDK-ARM/ADC - Simulation/
 *.ioc
 .mxproject
 MDK-ARM/
+*.uvrpojx
+*.uvoptx
+*.Farhang
